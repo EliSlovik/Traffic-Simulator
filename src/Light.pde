@@ -15,4 +15,3 @@ class Light {
     return isGreen ? "Green" : "Red";
   }
 }
-
