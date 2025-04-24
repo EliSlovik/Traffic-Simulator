@@ -3,14 +3,14 @@ class Car {
   int speed;
   boolean isBlocked;
   boolean isPassed;
-  Light light;
-  Car(int x, int y, int speed, boolean isBlocked, boolean isPassed, Light light) {
+  int tempSpeed;
+  Car(int x, int y, int speed, boolean isBlocked, boolean isPassed) {
     this.x = x;
     this.y = y;
     this.speed = speed;
     this.isBlocked = isBlocked;
     this.isPassed = isPassed;
-    this.light = light;
+    tempSpeed = speed;
   }
 
   int getSpeed() {
@@ -22,10 +22,13 @@ class Car {
       x += speed;
     }
   }
+
   void stop() {
-    if (!light.isGreen) {
-      speed = 0;
-    }
+    speed = 0;
+  }
+
+  void go() {
+    speed = tempSpeed;
   }
   void drawCar() {
     fill(255, 0, 0);
