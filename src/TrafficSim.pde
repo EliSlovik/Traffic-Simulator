@@ -1,4 +1,4 @@
-Car[] cars = new Car[1];//make arraylist later
+Car[] cars = new Car[3];//make arraylist later
 Game game;
 int roadWidth = 600;
 int laneWidth = 200;
@@ -12,13 +12,15 @@ void setup() {
   Table carTable;
   carTable = loadTable("test - Sheet1.csv", "header");
   for (TableRow row : carTable.rows()) {
-    int x = row.getInt("x");
-    int y = row.getInt("y");
-    Boolean isBlocked = row.getString("isBlocked") == "TRUE" ? true : false;
-    Boolean vertical = row.getString("vertical") == "TRUE" ? true : false;
-    Boolean up = row.getString("up") == "TRUE" ? true : false;
-    cars[j] = new Car(x, y, isBlocked, vertical, up);
-    j++;
+    while (j<cars.length) {
+      int x = row.getInt("x");
+      int y = row.getInt("y");
+      Boolean isBlocked = row.getString("isBlocked") == "TRUE" ? true : false;
+      Boolean vertical = row.getString("vertical") == "TRUE" ? true : false;
+      Boolean up = row.getString("up") == "TRUE" ? true : false;
+      cars[j] = new Car(x, y, isBlocked, vertical, up);
+      j++;
+    }
   }
   lights = new Light[] {
     new Light(false, 5000, 600, 550, "horizontal"),
@@ -127,30 +129,30 @@ Boolean isCarInFront(Car currentCar) {
           return true;
         }
       }
-      } else if (!currentCar.vertical && !other.vertical && currentCar.up == other.up) {
-        if (currentCar.up) {
-          if (other.x > currentCar.x && other.x - currentCar.x < 110) {
-            return true;
-          }
-        } else {
-          if (other.x < currentCar.x && currentCar.x - other.x < 110) {
-            return true;
-          }
+    } else if (!currentCar.vertical && !other.vertical && currentCar.up == other.up) {
+      if (currentCar.up) {
+        if (other.x > currentCar.x && other.x - currentCar.x < 110) {
+          return true;
+        }
+      } else {
+        if (other.x < currentCar.x && currentCar.x - other.x < 110) {
+          return true;
         }
       }
     }
-    //for (Car other : game.cars) {
-    //  if (other.x > 300 && other.x < 400 && other.y > 100 && other.y < 200) {//check if there is a car in the intersection
-    //    if ((currentCar.vertical && currentCar.up && currentCar.y <= 200 && currentCar.y + 100 > 200) ||
-    //      (currentCar.vertical && !currentCar.up && currentCar.y + 100 >= 100 && currentCar.y < 100) ||
-    //      (!currentCar.vertical && currentCar.up && currentCar.x + 100 >= 300 && currentCar.x < 250) ||
-    //      (!currentCar.vertical && !currentCar.up && currentCar.x-100 <=200 && currentCar.x > 350)) {
-    //      if (currentCar.vertical != other.vertical) { //check if it is in the way
-    //        System.out.println("testing");
-    //        return true;
-    //      }
-    //    }
-    //  }
-    //}
-    return false;
   }
+  //for (Car other : game.cars) {
+  //  if (other.x > 300 && other.x < 400 && other.y > 100 && other.y < 200) {//check if there is a car in the intersection
+  //    if ((currentCar.vertical && currentCar.up && currentCar.y <= 200 && currentCar.y + 100 > 200) ||
+  //      (currentCar.vertical && !currentCar.up && currentCar.y + 100 >= 100 && currentCar.y < 100) ||
+  //      (!currentCar.vertical && currentCar.up && currentCar.x + 100 >= 300 && currentCar.x < 250) ||
+  //      (!currentCar.vertical && !currentCar.up && currentCar.x-100 <=200 && currentCar.x > 350)) {
+  //      if (currentCar.vertical != other.vertical) { //check if it is in the way
+  //        System.out.println("testing");
+  //        return true;
+  //      }
+  //    }
+  //  }
+  //}
+  return false;
+}
