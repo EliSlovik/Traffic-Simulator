@@ -12,7 +12,7 @@ void setup() {
   Table carTable;
   carTable = loadTable("test - Sheet1.csv", "header");
   for (TableRow row : carTable.rows()) {
-    while (j<cars.length) {
+    if (j<cars.length) {
       int x = row.getInt("x");
       int y = row.getInt("y");
       Boolean isBlocked = row.getString("isBlocked") == "TRUE" ? true : false;
@@ -20,6 +20,8 @@ void setup() {
       Boolean up = row.getString("up") == "TRUE" ? true : false;
       cars[j] = new Car(x, y, isBlocked, vertical, up);
       j++;
+    }else {
+       break; 
     }
   }
   lights = new Light[] {
