@@ -1,18 +1,16 @@
 class Car {
   int x, y;
   int speed;
-  boolean isBlocked; // Not used in current logic, but kept
-  boolean isPassed;  // Not used in current logic, but kept
+  boolean isBlocked;
   int tempSpeed;
-  boolean vertical; // true = vertical movement
-  boolean up;       // if vertical: true = moving up, false = moving down
+  boolean vertical;
+  boolean up;
 
-  Car(int x, int y, int speed, boolean isBlocked, boolean isPassed, boolean vertical, boolean up) {
+  Car(int x, int y, boolean isBlocked, boolean vertical, boolean up) {
     this.x = x;
     this.y = y;
     this.speed = 2;
     this.isBlocked = false; // Car starts moving initially
-    this.isPassed = isPassed;
     this.tempSpeed = 2; // Store the original speed
     this.vertical = vertical;
     this.up = up;
@@ -63,7 +61,7 @@ class Car {
         rect(x, y, 40, 100);
       }
     } else {
-      fill(0, 150, 0); 
+      fill(0, 150, 0);
       rect(x, y, 100, 40);
     }
     // Simple wheels for all
