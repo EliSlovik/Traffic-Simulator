@@ -35,7 +35,7 @@ void setup() {
   game = new Game("test", cars.length, 60, 1, cars, lights);
   inters = new Intersection[] {
     new Intersection(0, 500, 500, lights),
-    new Intersection(1, 250, 250, lights2)
+    //new Intersection(1, 250, 250, lights2)
   };
   addCarButton = new Button(width - 160, height - 60, 150, 50, "Add Random Car", 16);
 }
@@ -54,10 +54,10 @@ void draw() {
       boolean shouldStop = false;
       for (Light light : inter.lights) {
         if (light.orientation.equals("horizontal") && !car.vertical) {
-          if (car.up && !light.isGreen && car.x+100 == inter.x) {
+          if (car.up && !light.isGreen && car.x == inter.x) {
             shouldStop = true;
             break;
-          } else if (!car.up && !light.isGreen && car.x == inter.x) {
+          } else if (!car.up && !light.isGreen && car.x == inter.x+100) {
             shouldStop = true;
             break;
           }
@@ -97,19 +97,19 @@ void addRandomCar() {
   boolean isUp = random(1) > 0.5;
   if (isVertical) {
     if (isUp) {
-      startX = 320;
+      startX = 500;
       startY = height + 50;
     } else {
-      startX = 360;
+      startX = 550;
       startY = -100;
     }
   } else {
     if (isUp) {
       startX = -100;
-      startY = 140;
+      startY = 550;
     } else {
       startX = 1500;
-      startY = 100;
+      startY = 500;
     }
   }
 
