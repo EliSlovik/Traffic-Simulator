@@ -4,4 +4,5 @@ This application is a traffic simulator and puzzle regarding minimizing traffic.
 something with in a jam
 ![ClassDiagram](images/TrafficDiagram.PNG)
 ![Mockup](images/mockup.jpg)
+
 urinals??!!!
