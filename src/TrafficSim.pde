@@ -1,27 +1,32 @@
-Car[] cars = new Car[3];//make arraylist later
+Car[] cars; //make arraylist later //<>//
 Game game;
+boolean started = false;
 int roadWidth = 600;
 int laneWidth = 200;
-Light[] lights;
-Light[] lights2;
-Button addCarButton;
+Light[] lights, lights2, lights3, lights4;
+Button addCarButton, startButton;
 Intersection[] inters;
 int j = 0;
 void setup() {
   size(1500, 1300);
   Table carTable;
   carTable = loadTable("test - Sheet1.csv", "header");
+  cars = new Car[carTable.getRowCount()];
   for (TableRow row : carTable.rows()) {
     if (j<cars.length) {
-      int x = row.getInt("x");
-      int y = row.getInt("y");
-      Boolean isBlocked = row.getString("isBlocked") == "TRUE" ? true : false;
-      Boolean vertical = row.getString("vertical") == "TRUE" ? true : false;
-      Boolean up = row.getString("up") == "TRUE" ? true : false;
-      cars[j] = new Car(x, y, isBlocked, vertical, up);
+      //int x = row.getInt("x");
+      //int y = row.getInt("y");
+      Boolean isBlocked = row.getString("isBlocked").equals("TRUE") ? true : false;
+      Boolean vertical = row.getString("vertical").equals("TRUE") ? true : false;
+      Boolean up = row.getString("up").equals("TRUE") ? true : false;
+      int ID = row.getInt("ID");
+      int timeBefore = row.getInt("timeBefore");
+      //cars[j] = new Car(x, y, isBlocked, vertical, up);
+      cars[j] = new Car(isBlocked, vertical, up, ID, timeBefore);
+      System.out.println("" + cars[j].x + "     " + cars[j].y);
       j++;
-    }else {
-       break; 
+    } else {
+      break;
     }
   }
   lights = new Light[] {
@@ -32,15 +37,52 @@ void setup() {
     new Light(true, 3000, 350, 300, "horizontal"),
     new Light(false, 3000, 300, 250, "vertical")
   };
+  lights3 = new Light[] {
+    new Light(true, 2000, 600, 300, "horizontal"),
+    new Light(false, 2000, 550, 250, "vertical")
+  };
+  lights4 = new Light[] {
+    new Light(true, 3000, 350, 550, "horizontal"),
+    new Light(false, 3000, 300, 500, "vertical")
+  };
   game = new Game("test", cars.length, 60, 1, cars, lights);
   inters = new Intersection[] {
-    new Intersection(0, 500, 500, lights),
-    //new Intersection(1, 250, 250, lights2)
+    new Intersection(3, 500, 500, lights),
+    new Intersection(0, 250, 250, lights2),
+    new Intersection(1, 500, 250, lights3),
+    new Intersection(2, 250, 500, lights4)
   };
   addCarButton = new Button(width - 160, height - 60, 150, 50, "Add Random Car", 16);
+  startButton = new Button(width/2, height/2, 300, 300, "Start", 20);
+  drawStartScreen();
 }
 
 void draw() {
+  if (started) {
+    playGame();
+  }
+}
+void mousePressed() {
+  if (addCarButton.isPressed()) {
+    addRandomCar();
+  }
+  if (startButton.isPressed()) {
+    started = true;
+  }
+}
+void drawStartScreen() {
+  fill(0);
+  textAlign(CENTER, CENTER);
+  textSize(32);
+  text("Traffic Simulation", width / 2, height / 2 - 100);
+
+  // Draw start button
+  fill(100, 200, 100);
+  startButton.display();
+  fill(255);
+  textSize(24);
+}
+void playGame() {
   background(220);
   for (Intersection inter : inters) {
     inter.display();
@@ -49,48 +91,42 @@ void draw() {
   for (Intersection inter : inters) {
     inter.displayLights();
   }
-  for (Intersection inter : inters) {
-    for (Car car : cars) {
-      boolean shouldStop = false;
+  for (Car car : cars) {
+    fill(0);
+    boolean shouldStop = false;
+    for (Intersection inter : inters) {
       for (Light light : inter.lights) {
         if (light.orientation.equals("horizontal") && !car.vertical) {
-          if (car.up && !light.isGreen && car.x == inter.x) {
+          if (car.up && !light.isGreen && car.x == inter.x-100 && abs(inter.y-car.y) < 100) {
             shouldStop = true;
             break;
-          } else if (!car.up && !light.isGreen && car.x == inter.x+100) {
+          } else if (!car.up && !light.isGreen && car.x == inter.x+100 && abs(inter.y-car.y) < 100) {
             shouldStop = true;
             break;
           }
         } else if (light.orientation.equals("vertical") && car.vertical) {
           if (!light.isGreen) {
-            if (!car.up && car.y+100 == inter.y) {
+            if (!car.up && car.y == inter.y-100 && abs(inter.x-car.x) < 100) {
               shouldStop = true;
               break;
-            } else if (car.up && car.y == inter.y+100) {
+            } else if (car.up && car.y == inter.y+100 && abs(inter.x-car.x) < 100) {
               shouldStop = true;
               break;
             }
           }
         }
       }
-
-      if (shouldStop || isCarInFront(car)) {
-        car.stop();
-      } else {
-        car.go();
-      }
-      car.update();
-      car.drawCar();
     }
+    if (shouldStop || isCarInFront(car)) {
+      car.stop();
+    } else {
+      car.go();
+    }
+    car.update();
+    car.drawCar();
     addCarButton.display();
   }
 }
-void mousePressed() {
-  if (addCarButton.isPressed()) {
-    addRandomCar();
-  }
-}
-
 void addRandomCar() {
   int startX, startY;
   boolean isVertical = random(1) > 0.5; // 50% chance of vertical
@@ -112,9 +148,8 @@ void addRandomCar() {
       startY = 500;
     }
   }
-
-  Car newCar = new Car(startX, startY, false, isVertical, isUp);
-  cars = (Car[]) append(cars, newCar);
+  //Car newCar = new Car(startX, startY, false, isVertical, isUp);
+  //cars = (Car[]) append(cars, newCar);
   game.cars = cars;
   game.carsLeft = cars.length;
 }
@@ -143,18 +178,5 @@ Boolean isCarInFront(Car currentCar) {
       }
     }
   }
-  //for (Car other : game.cars) {
-  //  if (other.x > 300 && other.x < 400 && other.y > 100 && other.y < 200) {//check if there is a car in the intersection
-  //    if ((currentCar.vertical && currentCar.up && currentCar.y <= 200 && currentCar.y + 100 > 200) ||
-  //      (currentCar.vertical && !currentCar.up && currentCar.y + 100 >= 100 && currentCar.y < 100) ||
-  //      (!currentCar.vertical && currentCar.up && currentCar.x + 100 >= 300 && currentCar.x < 250) ||
-  //      (!currentCar.vertical && !currentCar.up && currentCar.x-100 <=200 && currentCar.x > 350)) {
-  //      if (currentCar.vertical != other.vertical) { //check if it is in the way
-  //        System.out.println("testing");
-  //        return true;
-  //      }
-  //    }
-  //  }
-  //}
   return false;
 }

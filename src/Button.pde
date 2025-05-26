@@ -5,7 +5,7 @@ public class Button {
   int hei;
   String text;
   int textSize;
-
+  
   public Button(int x, int y, int wid, int hei, String text, int textSize) {
     this.x = x;
     this.y = y;
